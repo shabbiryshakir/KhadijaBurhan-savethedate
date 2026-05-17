@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<title>· · ·</title>
+<meta name="theme-color" content="#000000">
+
+<!-- ============================================================= -->
+<!--  WHATSAPP / LINK PREVIEW  (Open Graph)                        -->
+<!--  >>> AFTER enabling GitHub Pages, replace REPLACE-WITH-YOUR-   -->
+<!--  >>> PAGES-URL on the TWO lines below with your real address, -->
+<!--  >>> e.g. https://shabbiryshakir.github.io/savethedate/       -->
+<!-- ============================================================= -->
+<meta property="og:title" content="You've been invited to uncover something.">
+<meta property="og:description" content="Discover something beautiful. Some things reveal themselves slowly.">
+<meta property="og:image" content="https://REPLACE-WITH-YOUR-PAGES-URL/og.jpg">
+<meta property="og:url" content="https://REPLACE-WITH-YOUR-PAGES-URL/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Cinzel:wght@400;500;600&family=Marcellus&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --gold:#d8b878;
+    --gold-soft:#f0dcae;
+    --gold-bright:#ffe9bd;
+    --moon:#f4ecdc;
+    --whisper:rgba(244,236,220,.5);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;overflow:hidden;background:#000;overscroll-behavior:none}
+  body{
+    font-family:'Cormorant Garamond',serif;color:var(--moon);
+    position:fixed;inset:0;
+    display:flex;flex-direction:column;align-items:center;
+    -webkit-user-select:none;user-select:none;touch-action:none;
+  }
+
+  #sky{position:absolute;inset:0;z-index:0;
+    background:radial-gradient(ellipse 120% 80% at 50% 38%,#0e0d15 0%,#070710 44%,#000 100%)}
+  #stars{position:absolute;inset:0;z-index:1;pointer-events:none}
+  .star{position:absolute;background:#fff;border-radius:50%;
+    animation:tw var(--d) ease-in-out infinite alternate}
+  @keyframes tw{from{opacity:.15;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
+  .fall{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;
+    box-shadow:0 0 7px 2px rgba(255,255,255,.8);opacity:0;z-index:1}
+
+  /* one-screen column — every gap scales to viewport HEIGHT so it never overflows */
+  #wrap{position:relative;z-index:2;width:100%;height:100%;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:max(env(safe-area-inset-top),12px) 14px
+            calc(env(safe-area-inset-bottom,0) + 12px)}
+
+  /* names: forced ONE line, auto-shrinks so it can't wrap */
+  .names{font-family:'Cinzel',serif;font-weight:500;
+    font-size:clamp(15px,min(5.6vw,3.1vh),26px);
+    line-height:1;color:var(--gold-soft);text-align:center;
+    letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;
+    text-shadow:0 0 18px rgba(216,184,120,.4);
+    opacity:0;transform:translateY(-8px);
+    transition:opacity 1.6s ease 1.6s,transform 1.8s cubic-bezier(.22,1,.36,1) 1.6s}
+  .names.show{opacity:1;transform:translateY(0)}
+  .names .amp{color:var(--gold);opacity:.75;font-weight:400;padding:0 .35em;font-size:.7em}
+
+  #stage{position:relative;width:min(74vw,min(330px,42vh));aspect-ratio:1/1;
+    margin:clamp(8px,2.4vh,22px) 0}
+  #glow{position:absolute;inset:-20%;border-radius:50%;z-index:-1;
+    background:radial-gradient(circle,rgba(216,184,120,.34),rgba(216,184,120,0) 60%);
+    opacity:0;transition:opacity 2.6s ease}
+  #glow.on{opacity:1;animation:breathe 7s ease-in-out infinite}
+  @keyframes breathe{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.08);opacity:1}}
+  /* transparent moon.png shown contained over the night sky */
+  #art{position:absolute;inset:0;background-size:contain;background-position:center;
+    background-repeat:no-repeat;
+    opacity:0;transform:scale(1.05);
+    transition:opacity 2s ease,transform 2.4s cubic-bezier(.22,1,.36,1)}
+  #art.lit{opacity:1;transform:scale(1)}
+
+  /* FULL-SCREEN mist cover */
+  #clouds{position:fixed;inset:0;z-index:5;width:100%;height:100%;touch-action:none}
+  #hint{position:fixed;inset:0;z-index:6;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;pointer-events:none;
+    transition:opacity 1s ease}
+  #hint.gone{opacity:0}
+  .ring{width:62px;height:62px;border-radius:50%;border:1px solid rgba(244,236,220,.28);
+    display:flex;align-items:center;justify-content:center;margin-bottom:24px;
+    animation:pl 3.4s ease-in-out infinite}
+  .ring::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--gold-soft);
+    box-shadow:0 0 12px 3px rgba(240,220,174,.65)}
+  @keyframes pl{0%,100%{box-shadow:0 0 0 0 rgba(240,220,174,.22)}50%{box-shadow:0 0 0 15px rgba(240,220,174,0)}}
+  #hint p{font-family:'Cinzel',serif;font-weight:500;
+    font-size:clamp(16px,5vw,22px);letter-spacing:.2em;text-transform:uppercase;
+    color:var(--gold-soft);text-shadow:0 0 24px rgba(216,184,120,.5)}
+  #hint small{display:block;margin-top:14px;font-size:11px;letter-spacing:.26em;
+    color:rgba(244,236,220,.4);text-transform:uppercase;font-family:'Marcellus',serif}
+
+  #info{position:relative;z-index:2;text-align:center;padding:0 16px;
+    opacity:0;transform:translateY(12px);
+    transition:opacity 1.4s ease 2s,transform 1.6s cubic-bezier(.22,1,.36,1) 2s}
+  #info.show{opacity:1;transform:translateY(0)}
+  .kick{font-family:'Marcellus',serif;
+    font-size:clamp(10px,2.8vw,12px);letter-spacing:.5em;text-transform:uppercase;
+    color:var(--gold);opacity:.8;margin-bottom:clamp(6px,1.4vh,10px);padding-left:.5em}
+  /* 24th September smaller; Hijri larger -> better uniformity */
+  .hero{font-family:'Cormorant Garamond',serif;font-weight:400;
+    font-size:clamp(30px,9vw,46px);line-height:1;letter-spacing:.01em;
+    color:var(--gold-bright);
+    text-shadow:0 0 12px rgba(255,233,189,.5),0 0 30px rgba(216,184,120,.45),0 0 52px rgba(216,184,120,.28);
+    animation:hglow 4.5s ease-in-out infinite}
+  @keyframes hglow{0%,100%{text-shadow:0 0 12px rgba(255,233,189,.45),0 0 30px rgba(216,184,120,.4),0 0 52px rgba(216,184,120,.22)}
+    50%{text-shadow:0 0 18px rgba(255,233,189,.75),0 0 40px rgba(216,184,120,.65),0 0 70px rgba(216,184,120,.4)}}
+  .hero sup{font-size:.42em;vertical-align:.95em}
+  .hero .mo{font-style:italic;font-weight:300}
+  .hijri{margin-top:clamp(8px,1.6vh,13px);font-family:'Marcellus',serif;
+    font-size:clamp(15px,4.4vw,20px);letter-spacing:.1em;color:var(--gold-soft);opacity:.95}
+  .rule{width:46px;height:1px;margin:clamp(12px,2vh,17px) auto 0;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+
+  #foot{position:relative;z-index:2;width:100%;
+    display:flex;flex-direction:column;align-items:center;
+    margin-top:clamp(16px,3.4vh,30px)}
+  #cal{display:inline-flex;align-items:center;gap:10px;
+    font-family:'Marcellus',serif;font-size:clamp(11px,3vw,13px);
+    letter-spacing:.18em;text-transform:uppercase;color:var(--moon);
+    text-decoration:none;padding:12px 26px;border-radius:40px;
+    border:1px solid rgba(216,184,120,.4);background:rgba(216,184,120,.05);
+    opacity:0;transform:translateY(8px);
+    transition:opacity 1.2s ease 2.4s,transform 1.2s ease 2.4s,background .35s,border-color .35s}
+  #cal.show{opacity:1;transform:translateY(0)}
+  #cal:active{background:rgba(216,184,120,.16);border-color:var(--gold)}
+  #cal svg{width:15px;height:15px;stroke:var(--gold-soft);fill:none;stroke-width:1.5}
+  #credit{margin-top:clamp(10px,2vh,16px);opacity:0;transition:opacity 1.6s ease 3.4s}
+  #credit.show{opacity:.3}
+  #credit a{color:var(--whisper);text-decoration:none;font-family:'Marcellus',serif;
+    font-size:8px;letter-spacing:.32em;text-transform:uppercase}
+  #credit a b{color:var(--gold);font-weight:400}
+
+  .corner{position:fixed;z-index:7;width:42px;height:42px;border-radius:50%;
+    border:1px solid rgba(216,184,120,.32);background:rgba(0,0,0,.45);
+    backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;
+    opacity:0;pointer-events:none;transition:opacity .9s ease}
+  .corner.show{opacity:.62;pointer-events:auto}
+  .corner:active{opacity:1;background:rgba(216,184,120,.15)}
+  .corner svg{width:18px;height:18px;stroke:var(--gold-soft);fill:none;stroke-width:1.6}
+  #mute{left:16px;bottom:calc(env(safe-area-inset-bottom,0) + 18px)}
+  #replay{right:16px;bottom:calc(env(safe-area-inset-bottom,0) + 18px)}
+
+  @media (prefers-reduced-motion:reduce){
+    #glow.on,.hero{animation:none}.star{animation:none;opacity:.6}.ring{animation:none}
+  }
+</style>
+</head>
+<body>
+
+  <div id="sky"></div>
+  <div id="stars"></div>
+
+  <div id="wrap">
+    <div class="names">Khadija<span class="amp">&amp;</span>Burhanuddin</div>
+    <div id="stage">
+      <div id="glow"></div>
+      <div id="art"></div>
+    </div>
+    <div id="info">
+      <div class="kick">Save the Date</div>
+      <div class="hero">24<sup>th</sup> <span class="mo">September</span> 2026</div>
+      <div class="hijri">13mi Rabi ul Akhar 1448H</div>
+      <div class="rule"></div>
+    </div>
+    <div id="foot">
+      <a id="cal" href="#">
+        <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>
+        Add to Calendar
+      </a>
+      <div id="credit"><a href="https://shabbiryshakir.github.io" target="_blank" rel="noopener">Crafted by <b>S.Shakir</b></a></div>
+    </div>
+  </div>
+
+  <canvas id="clouds"></canvas>
+  <div id="hint">
+    <div class="ring"></div>
+    <p>Discover something beautiful</p>
+    <small>drag to reveal</small>
+  </div>
+
+  <div id="mute" class="corner" title="Mute">
+    <svg id="mIcon" viewBox="0 0 24 24"><path d="M5 9v6h4l5 4V5L9 9H5z"/><line x1="22" y1="9" x2="17" y2="14"/><line x1="17" y1="9" x2="22" y2="14"/></svg>
+  </div>
+  <div id="replay" class="corner" title="Reveal again">
+    <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v5h-5"/></svg>
+  </div>
+
+<script>
+(()=>{
+  const HERO="moon.png";   // <-- put your transparent moon.png beside this file
+  const art=document.getElementById('art');
+  const im=new Image();
+  im.onload=()=>{art.style.backgroundImage=`url(${HERO})`;};
+  im.onerror=()=>{art.style.background='radial-gradient(circle,#3a2f1c,transparent 70%)';};
+  im.src=HERO;
+
+  const sf=document.getElementById('stars');
+  const SN=matchMedia('(prefers-reduced-motion:reduce)').matches?70:150;
+  for(let i=0;i<SN;i++){
+    const s=document.createElement('div');s.className='star';
+    const z=Math.random(),sz=z*2.2+.4;
+    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;`+
+      `--d:${2+Math.random()*4}s;animation-delay:${Math.random()*5}s;opacity:${.2+z*.6}`;
+    sf.appendChild(s);
+  }
+  function shoot(){
+    const f=document.createElement('div');f.className='fall';
+    f.style.cssText=`left:${10+Math.random()*80}%;top:${Math.random()*30}%`;
+    sf.appendChild(f);
+    f.animate([{transform:'translate(0,0)',opacity:0},{opacity:1,offset:.12},
+      {transform:`translate(${-70-Math.random()*90}px,${160+Math.random()*120}px)`,opacity:0}],
+      {duration:1200+Math.random()*700,easing:'ease-in'}).onfinish=()=>f.remove();
+  }
+  setInterval(()=>{if(Math.random()<.5)shoot();},4200);
+
+  /* ---- full-screen rich, dark drifting mist ---- */
+  const cv=document.getElementById('clouds');
+  const ctx=cv.getContext('2d');
+  let W,H,dpr,started=false,done=false,tick=0,blobs=[],erase,raf,last=null;
+
+  function setup(){
+    dpr=Math.min(devicePixelRatio||1,2);
+    W=innerWidth;H=innerHeight;
+    cv.width=W*dpr;cv.height=H*dpr;
+    cv.style.width=W+'px';cv.style.height=H+'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    blobs=[];
+    for(let i=0;i<34;i++)blobs.push({
+      x:Math.random()*W,y:Math.random()*H,
+      r:(0.22+Math.random()*0.34)*Math.max(W,H)*0.6,
+      a:0.5+Math.random()*0.4,
+      vx:(Math.random()-.5)*0.20,vy:(Math.random()-.5)*0.12,
+      ph:Math.random()*6.28,sp:0.004+Math.random()*0.005});
+    erase=document.createElement('canvas');
+    erase.width=cv.width;erase.height=cv.height;
+    erase.getContext('2d').setTransform(dpr,0,0,dpr,0,0);
+  }
+  setup();
+
+  function frame(){
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.globalCompositeOperation='source-over';
+    ctx.clearRect(0,0,W,H);
+    // rich deep base — true night, never flat grey
+    const bg=ctx.createRadialGradient(W/2,H*0.42,0,W/2,H*0.42,Math.max(W,H)*0.8);
+    bg.addColorStop(0,'rgba(14,13,21,.99)');
+    bg.addColorStop(.55,'rgba(7,7,13,1)');
+    bg.addColorStop(1,'rgba(2,2,5,1)');
+    ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+    for(const b of blobs){
+      b.x+=b.vx;b.y+=b.vy;b.ph+=b.sp;
+      if(b.x<-b.r)b.x=W+b.r;if(b.x>W+b.r)b.x=-b.r;
+      if(b.y<-b.r)b.y=H+b.r;if(b.y>H+b.r)b.y=-b.r;
+      const pr=b.r*(1+Math.sin(b.ph)*0.05);
+      const al=b.a*(0.82+Math.sin(b.ph)*0.18);
+      const g=ctx.createRadialGradient(b.x,b.y,0,b.x,b.y,pr);
+      g.addColorStop(0,`rgba(30,28,40,${al})`);
+      g.addColorStop(.5,`rgba(17,16,26,${al*.78})`);
+      g.addColorStop(1,'rgba(8,8,14,0)');
+      ctx.fillStyle=g;ctx.beginPath();ctx.arc(b.x,b.y,pr,0,7);ctx.fill();
+    }
+    ctx.globalCompositeOperation='destination-out';
+    ctx.drawImage(erase,0,0,W,H);
+    if(!done)raf=requestAnimationFrame(frame);
+  }
+  frame();
+
+  function pt(e){const t=e.touches?e.touches[0]:e;return{x:t.clientX,y:t.clientY};}
+  function carve(p){
+    const ec=erase.getContext('2d');ec.globalCompositeOperation='source-over';
+    const R=Math.max(W,H)*0.11;
+    const dot=(x,y)=>{const g=ec.createRadialGradient(x,y,0,x,y,R);
+      g.addColorStop(0,'rgba(0,0,0,1)');g.addColorStop(.55,'rgba(0,0,0,.9)');
+      g.addColorStop(1,'rgba(0,0,0,0)');
+      ec.fillStyle=g;ec.beginPath();ec.arc(x,y,R,0,7);ec.fill();};
+    if(last){const dx=p.x-last.x,dy=p.y-last.y,d=Math.hypot(dx,dy),st=Math.max(d/5,1);
+      for(let i=0;i<d;i+=st)dot(last.x+dx*i/d,last.y+dy*i/d);}
+    dot(p.x,p.y);last=p;
+    if(navigator.vibrate)navigator.vibrate(6);
+  }
+  function begin(){
+    if(started)return;started=true;
+    document.getElementById('hint').classList.add('gone');
+    document.getElementById('glow').classList.add('on');
+    startMusic();
+  }
+  function measure(){
+    if(done||(++tick%6))return;
+    const d=erase.getContext('2d').getImageData(0,0,erase.width,erase.height).data;
+    let c=0,n=0;for(let i=3;i<d.length;i+=40){n++;if(d[i]>120)c++;}
+    if(c/n>0.45)finish();
+  }
+  function finish(){
+    if(done)return;done=true;cancelAnimationFrame(raf);
+    cv.style.transition='opacity 1.3s ease';cv.style.opacity='0';
+    setTimeout(()=>cv.remove(),1400);
+    art.classList.add('lit');
+    document.querySelector('.names').classList.add('show');
+    document.getElementById('info').classList.add('show');
+    document.getElementById('cal').classList.add('show');
+    document.getElementById('credit').classList.add('show');
+    document.getElementById('replay').classList.add('show');
+    document.getElementById('mute').classList.add('show');
+    let k=0;const s=setInterval(()=>{shoot();if(++k>6)clearInterval(s);},360);
+  }
+  function down(e){e.preventDefault();begin();last=null;carve(pt(e));down._on=1;}
+  function move(e){if(!down._on||done)return;e.preventDefault();carve(pt(e));measure();}
+  function up(){down._on=0;last=null;}
+  cv.addEventListener('touchstart',down,{passive:false});
+  cv.addEventListener('touchmove',move,{passive:false});
+  cv.addEventListener('touchend',up);
+  cv.addEventListener('mousedown',down);
+  addEventListener('mousemove',move);addEventListener('mouseup',up);
+  addEventListener('resize',()=>{if(!started)setup();});
+
+  document.getElementById('replay').addEventListener('click',()=>location.reload());
+
+  /* ---- soft harp / music-box (subtle, low volume, mute on left) ---- */
+  let AC,master,mstarted=false,muted=false;
+  function startMusic(){
+    if(mstarted)return;mstarted=true;
+    try{
+      AC=new (window.AudioContext||window.webkitAudioContext)();
+      master=AC.createGain();master.gain.value=0;
+      const delay=AC.createDelay();delay.delayTime.value=0.34;
+      const fb=AC.createGain();fb.gain.value=0.30;
+      const tone=AC.createBiquadFilter();tone.type='lowpass';tone.frequency.value=2400;
+      delay.connect(fb);fb.connect(delay);delay.connect(tone);tone.connect(master);
+      master.connect(AC.destination);
+      master.gain.linearRampToValueAtTime(0.10,AC.currentTime+3.5); // subtle
+      function pluck(freq,t,vel){
+        const o1=AC.createOscillator();o1.type='triangle';o1.frequency.value=freq;
+        const o2=AC.createOscillator();o2.type='sine';o2.frequency.value=freq*2;
+        const g=AC.createGain();
+        g.gain.setValueAtTime(0,t);
+        g.gain.linearRampToValueAtTime(vel,t+0.012);
+        g.gain.exponentialRampToValueAtTime(0.0001,t+2.4);
+        const g2=AC.createGain();g2.gain.value=0.32;
+        o1.connect(g);o2.connect(g2);g2.connect(g);
+        g.connect(master);g.connect(delay);
+        o1.start(t);o2.start(t);o1.stop(t+2.5);o2.stop(t+2.5);
+      }
+      const sc=[220,246.94,293.66,329.63,392,440,493.88,587.33];
+      let step=0;
+      (function loop(){
+        if(AC.state!=='running'){setTimeout(loop,900);return;}
+        const t=AC.currentTime+0.05;
+        const i=[0,2,4,5,4,2,3,1][step%8];
+        pluck(sc[i],t,0.5);
+        if(step%4===0){pluck(sc[i]/2,t,0.3);pluck(sc[(i+2)%sc.length],t+0.04,0.26);}
+        if(step%8===6)pluck(sc[6],t+0.18,0.32);
+        step++;setTimeout(loop,900);
+      })();
+    }catch(e){}
+  }
+  const mute=document.getElementById('mute'),mIcon=document.getElementById('mIcon');
+  mute.addEventListener('click',()=>{
+    if(!master)return;
+    muted=!muted;
+    master.gain.linearRampToValueAtTime(muted?0:0.10,AC.currentTime+0.4);
+    mIcon.innerHTML = muted
+      ? '<path d="M5 9v6h4l5 4V5L9 9H5z"/><line x1="22" y1="9" x2="17" y2="14"/><line x1="17" y1="9" x2="22" y2="14"/>'
+      : '<path d="M5 9v6h4l5 4V5L9 9H5z"/><path d="M16 8a5 5 0 0 1 0 8"/><path d="M19 5a9 9 0 0 1 0 14"/>';
+    mute.style.opacity=muted?'.62':'1';
+  });
+
+  /* ---- Add to Calendar (.ics) ---- */
+  document.getElementById('cal').addEventListener('click',e=>{
+    e.preventDefault();
+    const ics=
+`BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//S.Shakir//SaveTheDate//EN
+BEGIN:VEVENT
+UID:khadija-burhanuddin-2026@savethedate
+DTSTART;VALUE=DATE:20260924
+DTEND;VALUE=DATE:20260925
+SUMMARY:Khadija's Wedding
+DESCRIPTION:Save the date \u2014 Khadija & Burhanuddin \u2014 24 September 2026 (13mi Rabi ul Akhar 1448H)
+END:VEVENT
+END:VCALENDAR`;
+    const b=new Blob([ics],{type:'text/calendar'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(b);a.download="Khadijas-Wedding.ics";
+    document.body.appendChild(a);a.click();a.remove();
+  });
+})();
+</script>
+</body>
+</html>
