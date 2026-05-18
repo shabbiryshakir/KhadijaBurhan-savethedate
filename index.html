@@ -14,8 +14,8 @@
 <!-- ============================================================= -->
 <meta property="og:title" content="You've been invited to uncover something.">
 <meta property="og:description" content="Discover something beautiful. Some things reveal themselves slowly.">
-<meta property="og:image" content="https://shabbiryshakir.github.io/KhadijaBurhan-savethedate/og.jpg">
-<meta property="og:url" content="https://shabbiryshakir.github.io/KhadijaBurhan-savethedate/">
+<meta property="og:image" content="https://REPLACE-WITH-YOUR-PAGES-URL/og.jpg">
+<meta property="og:url" content="https://REPLACE-WITH-YOUR-PAGES-URL/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 
@@ -86,17 +86,34 @@
     align-items:center;justify-content:center;text-align:center;pointer-events:none;
     transition:opacity 1s ease}
   #hint.gone{opacity:0}
-  .ring{width:62px;height:62px;border-radius:50%;border:1px solid rgba(244,236,220,.28);
-    display:flex;align-items:center;justify-content:center;margin-bottom:24px;
-    animation:pl 3.4s ease-in-out infinite}
-  .ring::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--gold-soft);
-    box-shadow:0 0 12px 3px rgba(240,220,174,.65)}
-  @keyframes pl{0%,100%{box-shadow:0 0 0 0 rgba(240,220,174,.22)}50%{box-shadow:0 0 0 15px rgba(240,220,174,0)}}
   #hint p{font-family:'Cinzel',serif;font-weight:500;
     font-size:clamp(16px,5vw,22px);letter-spacing:.2em;text-transform:uppercase;
     color:var(--gold-soft);text-shadow:0 0 24px rgba(216,184,120,.5)}
-  #hint small{display:block;margin-top:14px;font-size:11px;letter-spacing:.26em;
-    color:rgba(244,236,220,.4);text-transform:uppercase;font-family:'Marcellus',serif}
+  /* animated swipe hand */
+  .swipe{position:relative;width:170px;height:80px;margin:30px 0 8px}
+  .swipe .hand{position:absolute;top:14px;left:0;width:52px;height:52px;
+    filter:drop-shadow(0 0 10px rgba(240,220,174,.55));
+    animation:swipe 2.4s cubic-bezier(.5,0,.5,1) infinite}
+  .swipe .trail{position:absolute;top:38px;left:24px;height:3px;width:118px;
+    border-radius:3px;
+    background:linear-gradient(90deg,transparent,rgba(240,220,174,.55),transparent);
+    animation:trail 2.4s cubic-bezier(.5,0,.5,1) infinite}
+  @keyframes swipe{
+    0%{transform:translateX(0) scale(.92);opacity:0}
+    15%{opacity:1}
+    55%{transform:translateX(104px) scale(1);opacity:1}
+    72%{transform:translateX(104px) scale(1);opacity:0}
+    73%{transform:translateX(0) scale(.92);opacity:0}
+    100%{transform:translateX(0) scale(.92);opacity:0}}
+  @keyframes trail{
+    0%,15%{opacity:0;transform:scaleX(.2)}
+    45%{opacity:1;transform:scaleX(1)}
+    65%{opacity:0;transform:scaleX(1)}
+    100%{opacity:0}}
+  #hint small{display:block;margin-top:8px;
+    font-size:clamp(14px,4vw,18px);letter-spacing:.32em;
+    color:var(--gold);text-transform:uppercase;font-family:'Marcellus',serif;
+    text-shadow:0 0 16px rgba(216,184,120,.4)}
 
   #info{position:relative;z-index:2;text-align:center;padding:0 16px;
     opacity:0;transform:translateY(12px);
@@ -133,11 +150,16 @@
   #cal.show{opacity:1;transform:translateY(0)}
   #cal:active{background:rgba(216,184,120,.16);border-color:var(--gold)}
   #cal svg{width:15px;height:15px;stroke:var(--gold-soft);fill:none;stroke-width:1.5}
-  #credit{margin-top:clamp(10px,2vh,16px);opacity:0;transition:opacity 1.6s ease 3.4s}
-  #credit.show{opacity:.3}
+  #credit{position:fixed;left:0;right:0;
+    bottom:calc(env(safe-area-inset-bottom,0) + 14px);
+    z-index:4;text-align:center;
+    opacity:0;transition:opacity 1.6s ease 3.4s;pointer-events:none}
+  #credit.show{opacity:.62;pointer-events:auto}
   #credit a{color:var(--whisper);text-decoration:none;font-family:'Marcellus',serif;
-    font-size:8px;letter-spacing:.32em;text-transform:uppercase}
+    font-size:11px;letter-spacing:.34em;text-transform:uppercase}
   #credit a b{color:var(--gold);font-weight:400}
+  /* keep the date/button column clear of the pinned credit + corner buttons */
+  #foot{padding-bottom:clamp(40px,8vh,68px)}
 
   .corner{position:fixed;z-index:7;width:42px;height:42px;border-radius:50%;
     border:1px solid rgba(216,184,120,.32);background:rgba(0,0,0,.45);
@@ -146,11 +168,13 @@
   .corner.show{opacity:.62;pointer-events:auto}
   .corner:active{opacity:1;background:rgba(216,184,120,.15)}
   .corner svg{width:18px;height:18px;stroke:var(--gold-soft);fill:none;stroke-width:1.6}
-  #mute{left:16px;bottom:calc(env(safe-area-inset-bottom,0) + 18px)}
-  #replay{right:16px;bottom:calc(env(safe-area-inset-bottom,0) + 18px)}
+  #mute{left:16px;bottom:calc(env(safe-area-inset-bottom,0) + 46px)}
+  #replay{right:16px;bottom:calc(env(safe-area-inset-bottom,0) + 46px)}
 
   @media (prefers-reduced-motion:reduce){
-    #glow.on,.hero{animation:none}.star{animation:none;opacity:.6}.ring{animation:none}
+    #glow.on,.hero{animation:none}.star{animation:none;opacity:.6}
+    .swipe .hand,.swipe .trail{animation:none}
+    .swipe .hand{opacity:1;transform:translateX(52px)}
   }
 </style>
 </head>
@@ -176,15 +200,22 @@
         <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>
         Add to Calendar
       </a>
-      <div id="credit"><a href="https://shabbiryshakir.github.io" target="_blank" rel="noopener">Crafted by <b>S.Shakir</b></a></div>
     </div>
   </div>
 
+  <div id="credit"><a href="https://shabbiryshakir.github.io" target="_blank" rel="noopener">Crafted by <b>S.Shakir</b></a></div>
+
   <canvas id="clouds"></canvas>
   <div id="hint">
-    <div class="ring"></div>
     <p>Discover something beautiful</p>
-    <small>drag to reveal</small>
+    <div class="swipe">
+      <span class="trail"></span>
+      <svg class="hand" viewBox="0 0 64 64" fill="none">
+        <path d="M30 14c0-3 5-3 5 0v16l4-6c2-3 7 0 5 3l-6 11c-1 5-5 9-11 9h-3c-5 0-9-3-11-8l-5-12c-1-3 4-5 6-2l4 6V20c0-3 5-3 5 0v10m-5 0V24c0-3 5-3 5 0v6"
+          stroke="#f0dcae" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <small>swipe to reveal</small>
   </div>
 
   <div id="mute" class="corner" title="Mute">
