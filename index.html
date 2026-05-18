@@ -14,8 +14,8 @@
 <!-- ============================================================= -->
 <meta property="og:title" content="You've been invited to uncover something.">
 <meta property="og:description" content="Discover something beautiful. Some things reveal themselves slowly.">
-<meta property="og:image" content="https://shabbiryshakir.github.io/KhadijaBurhan-savethedate/og.jpg">
-<meta property="og:url" content="https://shabbiryshakir.github.io/KhadijaBurhan-savethedate/">
+<meta property="og:image" content="https://REPLACE-WITH-YOUR-PAGES-URL/og.jpg">
+<meta property="og:url" content="https://REPLACE-WITH-YOUR-PAGES-URL/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 
@@ -325,15 +325,16 @@
     startMusic();
   }
   function measure(){
-    if(done||(++tick%6))return;
+    if(done||(++tick%4))return;
     const d=erase.getContext('2d').getImageData(0,0,erase.width,erase.height).data;
     let c=0,n=0;for(let i=3;i<d.length;i+=40){n++;if(d[i]>120)c++;}
-    if(c/n>0.45)finish();
+    if(c/n>0.18)finish();   // small swipe is enough — rest clears itself
   }
   function finish(){
     if(done)return;done=true;cancelAnimationFrame(raf);
-    cv.style.transition='opacity 1.3s ease';cv.style.opacity='0';
-    setTimeout(()=>cv.remove(),1400);
+    cv.style.transition='opacity 1.7s cubic-bezier(.4,0,.2,1)';
+    cv.style.opacity='0';
+    setTimeout(()=>cv.remove(),1800);
     art.classList.add('lit');
     document.querySelector('.names').classList.add('show');
     document.getElementById('info').classList.add('show');
@@ -356,11 +357,22 @@
   document.getElementById('replay').addEventListener('click',()=>location.reload());
 
   /* ---- soft harp / music-box (subtle, low volume, mute on left) ---- */
+  /* iOS Safari: AudioContext starts suspended; must .resume() inside a
+     user gesture. (Note: if the iPhone hardware ring/silent switch is ON,
+     iOS mutes Web Audio regardless — no website can override that.) */
   let AC,master,mstarted=false,muted=false;
+  function kickAudio(){
+    if(AC&&AC.state==='suspended'){AC.resume();}
+  }
   function startMusic(){
     if(mstarted)return;mstarted=true;
     try{
       AC=new (window.AudioContext||window.webkitAudioContext)();
+      // resume immediately (we're inside the swipe touch handler here)
+      if(AC.state==='suspended')AC.resume();
+      // and re-attempt on the next few interactions in case iOS deferred it
+      ['touchend','touchstart','pointerdown','click'].forEach(ev=>
+        addEventListener(ev,kickAudio,{passive:true}));
       master=AC.createGain();master.gain.value=0;
       const delay=AC.createDelay();delay.delayTime.value=0.34;
       const fb=AC.createGain();fb.gain.value=0.30;
